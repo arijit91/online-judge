@@ -15,7 +15,7 @@ app.set('port', config.port);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
-// Switch to production
+// Switch to production, right now no diff as error handler not used in dev
 //app.set('env', 'production');
 
 app.use(express.favicon());
@@ -48,5 +48,10 @@ http.createServer(app).listen(app.get('port'), function(){
 
 app.use(function (err, req, res, next) {
   console.log(err);
-  res.send(500, 'There seems to be an error');
+  res.status(500).end('Error 500: Server internal error');
+});
+
+// Is the assumption that everything here is a 404 correct?
+app.use(function(req, res) {
+  res.status(404).end('Error 404: Page not found');
 });

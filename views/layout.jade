@@ -1,7 +1,37 @@
 doctype 5
 html
   head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    meta(charset='utf-8')
+    meta(name='viewport', content="width=device-width, initial-scale=1.0")
+    title Online Judge
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css', media='screen')
+    link(rel='stylesheet', href='/stylesheets/custom.css')
+
   body
-    block content
+    div.navbar.navbar-inverse.navbar-fixed-top
+        div.navbar-inner
+            a.brand(href='#') Online Judge
+
+            ul.nav
+                li
+                    a(href='/home') Home
+                li
+                    a(href='/faq') FAQ
+                li
+                    a(href='/problems') Problems
+                li
+                    a(href='/queue') Queue
+                li
+                    a(href='/standings') Standings
+                li
+                    a(href='/profile') Profile
+                li
+                    a(href='/submissions') Submissions
+                li
+                    a(href='/login') Login
+                    
+    div.container
+        block content
+
+    script(src='/javascripts/jquery.min.js')
+    script(src='/javascripts/bootstrap.min.js')

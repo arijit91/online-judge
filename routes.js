@@ -11,8 +11,28 @@ module.exports = function(app) {
     res.render('home');
   });
 
-  app.get('/test', requireLogin, function(req, res){
-    res.render('test');
+  app.get('/faq', function(req, res){
+    res.render('faq');
+  });
+
+  app.get('/problems', function(req, res){
+    res.render('problems');
+  });
+
+  app.get('/queue', function(req, res){
+    res.render('queue');
+  });
+
+  app.get('/standings', function(req, res){
+    res.render('standings');
+  });
+
+  app.get('/profile', function(req, res){
+    res.render('profile');
+  });
+
+  app.get('/submissions', function(req, res){
+    res.render('submissions');
   });
 
   app.get('/login', function(req, res){
@@ -23,4 +43,8 @@ module.exports = function(app) {
     res.render('register');
   });
 
+  //
+  //app.get('/test', requireLogin, function(req, res){
+  //  res.render('test');
+  //});
 };
