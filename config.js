@@ -10,4 +10,7 @@ config.session_secret = "canyouguessthisiguessyoucant";
 // TODO: this should be different for each user
 config.salt = "thismaywreckeverything";
 
+// For registration
+config.passcode = "donotgivethistoastranger";
+
 module.exports = config;

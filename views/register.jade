@@ -1,4 +1,65 @@
 extends layout
 
 block content
-  p Register
+  form#reg-form.form-horizontal(method='post')
+    fieldset
+      legend Registration Form
+      .control-group
+          label.control-label Full Name
+          .controls
+            input(type='text', name='name', maxlength=70, pattern='[a-z A-Z]*', data-validation-pattern-message='Only alphabets and spaces allowed', required='required', data-validation-required-message='Required')
+            p.help-block
+
+      .control-group
+          label.control-label Email Address
+          .controls
+            input(type='email', name='email', maxlength=70, required='required', data-validation-required-message='Required')
+            p.help-block
+
+      .control-group
+          label.control-label Institute Name
+          .controls
+            input(type='text', name='institute', maxlength=70, pattern='[a-z A-Z]*', data-validation-pattern-message='Only alphabets and spaces allowed', required='required', data-validation-required-message='Required')
+            p.help-block
+
+      .control-group
+          label.control-label City
+          .controls
+            input(type='text', name='city', maxlength=70, pattern='[a-z A-Z]*', data-validation-pattern-message='Only alphabets and spaces allowed', required='required', data-validation-required-message='Required')
+            p.help-block
+
+      .control-group
+          label.control-label Roll Number
+          .controls
+            input(type='text', name='roll', maxlength=70, pattern='[a-zA-Z0-9]*', data-validation-pattern-message='Only alphanumeric characters allowed', required='required', data-validation-required-message='Required')
+            p.help-block
+
+      .control-group
+          label.control-label User Name
+          .controls
+            input(type='text', name='username', maxlength=70, pattern='[a-zA-Z0-9]*', data-validation-pattern-message='Only alphanumeric characters allowed', required='required', data-validation-required-message='Required')
+            p.help-block
+
+      .control-group
+          label.control-label Password
+          .controls
+            input(type='password', name='pass1', minlength=7, maxlength=70, pattern='[a-zA-Z0-9]*', data-validation-pattern-message='Only alphanumeric characters allowed', required='required', data-validation-required-message='Required')
+            p.help-block
+
+      .control-group
+        label.control-label Verify Password
+        .controls
+          input(type='password', name='pass2', minlength=7, maxlength=70, pattern='[a-zA-Z0-9]*', data-validation-pattern-message='Only alphanumeric characters allowed', data-validation-match-match='pass1', required='required', data-validation-required-message='Required')
+          p.help-block
+
+      .control-group
+        label.control-label Passcode
+        .controls
+          input(type='password', name='passcode', maxlength=70, pattern='[a-zA-Z0-9]*', data-validation-pattern-message='Only alphanumeric characters allowed', required='required', data-validation-required-message='Required')
+          p.help-block
+
+      button.btn.btn-primary(type='submit', align='center') Submit
+        i.icon-ok.icon-white
+
+    fieldset
+  form

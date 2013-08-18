@@ -35,6 +35,10 @@ module.exports = function(app) {
     res.render('submissions');
   });
 
+  app.get('/users', function(req, res){
+    res.render('users');
+  });
+
   app.get('/login', function(req, res){
     res.render('login');
   });

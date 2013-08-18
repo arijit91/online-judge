@@ -1,10 +1,20 @@
-.body {
-}
 .container {
     padding-top: 50px;
+}
+
+form {
+    margin: 0 auto;
+    width: 600px;
 }
 
 .navbar .brand {
     padding-left: 30px;
 }
 
+form#reg-form .control-group {
+    margin-bottom: 10px;
+}
+
+form#reg-form .btn {
+    margin-left: 220px;
+}
