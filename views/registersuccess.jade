@@ -1,0 +1,30 @@
+extends layout
+
+block content
+  h4 #{username}, your registration was successful, congratulations!
+
+  br
+
+  h4 Please remember your password, since as of now there is no way for you to recover it via email.
+  h4 If you do lose your password, you will need an authorization code to confirm that you are indeed the owner of your account.
+
+  br
+
+  h4 Your authcode is: #{authcode}
+  h4 Please note down this authcode someplace safe.
+
+  br
+
+  h4 You may now celebrate by drinking a cold beverage or logging in to get started with the problems.
+
+  br
+  br
+  br
+
+
+  div.row
+    div.span2.offset2
+        a.btn.btn-primary.btn-block.btn-large(href='/login') Login
+
+    div.span2.offset2
+        a.btn.btn-primary.btn-block.btn-large(href='/home') Home

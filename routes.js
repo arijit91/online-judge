@@ -1,8 +1,12 @@
+var crypto = require('crypto');
+var mongoose = require('mongoose');
+
 var config = require('./config');
 
-var mongoose = require('mongoose');
+// Excuse for not using password protection for MongoDB:
+// Make sure that only localhost can bind to it (mongodb.conf)
+// If someone has access to localhost, they can do worse damage anyway
 var db = mongoose.connect('mongodb://localhost/'+config.db);
-var connection = mongoose.connectionl
 
 var schema = require('./schema');
 var utils = require('./utils');
@@ -56,6 +60,10 @@ module.exports = function(app) {
     res.render('register');
   });
 
+  app.get('/register/success', function(req, res){
+      res.render('registersuccess', req.query);
+  });
+
   app.post('/register', function(req, res) {
     var form = req.body;
 
@@ -72,12 +80,13 @@ module.exports = function(app) {
       user.name = form.name;
       user.email = form.email;
       user.institute = form.institute;
-      user.roll = form.roll;
       user.city = form.city;
+      user.roll = form.roll;
       user.username = form.username;
-      user.password = form.pass1;
       user.privilege_level = config.PRIVILEGE_USER;
       user.authcode = utils.generate_authcode();
+
+      user.password = crypto.createHash('sha256').update(config.salt + form.pass1).digest('hex');
 
       user.save(function(err) {
         if (err) {
@@ -86,9 +95,15 @@ module.exports = function(app) {
         } else {
           console.log("New user added.");
         }
-    });
+      });
 
-    // This is not over yet
+      // saved user to database, now redirect him
+      
+      var params = '?';
+      params += 'username=' + user.username;
+      params += '&authcode=' + user.authcode;
+
+      res.redirect('/register/success' + params);
   }
 
   });
