@@ -11,12 +11,13 @@ var db = mongoose.connect('mongodb://localhost/'+config.db);
 var schema = require('./schema');
 var utils = require('./utils');
 
-var requireLogin = require('./middleware').requireLogin;
+var middleware = require('./middleware');
+var requireLogin = middleware.requireLogin;
+var requireNoLogin = middleware.requireNoLogin;
 
 module.exports = function(app) {
 
   app.get('/', function(req, res){
-    //res.render('index', { title: 'Express' });
     res.redirect('/home');
   });
 
@@ -32,6 +33,10 @@ module.exports = function(app) {
     res.render('problems');
   });
 
+  app.get('/submit', function(req, res){
+    res.render('submit');
+  });
+
   app.get('/queue', function(req, res){
     res.render('queue');
   });
@@ -40,7 +45,7 @@ module.exports = function(app) {
     res.render('standings');
   });
 
-  app.get('/profile', function(req, res){
+  app.get('/profile', requireLogin, function(req, res){
     res.render('profile');
   });
 
@@ -52,19 +57,56 @@ module.exports = function(app) {
     res.render('users');
   });
 
-  app.get('/login', function(req, res){
+  app.get('/logout', function(req, res){
+    delete req.session.username;
+    res.redirect('/login');
+  });
+
+  app.get('/login', requireNoLogin, function(req, res){
     res.render('login');
   });
 
-  app.get('/register', function(req, res){
+  app.post('/login', requireNoLogin, function(req, res) {
+    var form = req.body;
+
+    var UserSchema = schema.UserSchema;
+    var User = mongoose.model('User', UserSchema);
+  
+    var creds = {};
+
+    creds.username = form.username;
+    creds.password = crypto.createHash('sha256').update(config.salt + form.password).digest('hex');
+
+    User.findOne(creds, function(err, user) {
+        if (err) {
+            throw err;
+            console.log(err);
+        }
+        else {
+            if (user) {
+                // user found, log him in
+                req.session.username = form.username;
+                res.redirect('/home');
+            }
+            else {
+                res.redirect('/login?invalid=1');
+            }
+        }
+    });
+
+  });
+
+  app.get('/register', requireNoLogin, function(req, res){
     res.render('register');
   });
 
-  app.get('/register/success', function(req, res){
+
+  app.get('/register/success', requireNoLogin, function(req, res){
       res.render('registersuccess', req.query);
   });
 
-  app.post('/register', function(req, res) {
+  // TODO: Validate this data similar to how it was done on the front end
+  app.post('/register', requireNoLogin, function(req, res) {
     var form = req.body;
 
     if (req.body.passcode != config.passcode) {

@@ -26,6 +26,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.cookieParser());
 app.use(express.session({secret: config.session_secret}));
 
+app.use(function(req, res, next) {
+    res.locals.session = req.session;
+    next();
+});
+
 if ('development' == app.get('env')) {
   //app.use(express.errorHandler());
   app.use(express.logger('dev'));

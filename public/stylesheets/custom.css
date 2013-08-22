@@ -18,3 +18,17 @@ form#reg-form .control-group {
 form#reg-form .btn {
     margin-left: 220px;
 }
+
+form#login-form .control-group {
+    margin-bottom: 10px;
+}
+
+form#login-form .btn {
+    margin-left: 220px;
+}
+
+form#login-form #error-msg {
+    margin-left: 70px;
+    color: red;
+    display: none;
+}

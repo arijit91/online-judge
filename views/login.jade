@@ -1,4 +1,26 @@
 extends layout
 
 block content
-  p Login page
+  form#login-form.form-horizontal(method='post')
+    fieldset
+      legend Login Form
+      .control-group
+          label.control-label User Name
+          .controls
+            input(type='text', name='username', maxlength=70, pattern='[a-zA-Z0-9]*', data-validation-pattern-message='Only alphanumeric characters allowed', required='required', data-validation-required-message='Required')
+            p.help-block
+
+      .control-group
+          label.control-label Password
+          .controls
+            input(type='password', name='password', minlength=7, maxlength=70, pattern='[a-zA-Z0-9]*', data-validation-pattern-message='Only alphanumeric characters allowed', required='required', data-validation-required-message='Required')
+            p.help-block
+
+      #error-msg.help-block Incorrect username and password combination. Please try again.
+      br    
+
+      button.btn.btn-primary(type='submit', align='center') Submit
+        i.icon-ok.icon-white
+
+    fieldset
+  form

@@ -20,19 +20,27 @@ html
                 li
                     a(href='/problems') Problems
                 li
+                    a(href='/submit') Submit
+                li
                     a(href='/queue') Queue
                 li
                     a(href='/standings') Standings
-                li
-                    a(href='/profile') Profile
                 li
                     a(href='/submissions') Submissions
                 li
                     a(href='/users') Users
                 li
-                    a(href='/login') Login
+                    if !session.username
+                        a(href='/login') Login
                 li
-                    a(href='/register') Register
+                    if !session.username
+                        a(href='/register') Register
+                li
+                    if session.username
+                        a(href='/profile') Profile
+                li
+                    if session.username
+                        a(href='/logout') Logout
                     
     div.container
         block content
