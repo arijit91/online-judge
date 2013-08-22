@@ -18,6 +18,8 @@ html
                 li
                     a(href='/faq') FAQ
                 li
+                    a(href='/users') Registrants
+                li
                     a(href='/problems') Problems
                 li
                     a(href='/submit') Submit
@@ -26,15 +28,14 @@ html
                 li
                     a(href='/standings') Standings
                 li
-                    a(href='/submissions') Submissions
-                li
-                    a(href='/users') Users
-                li
                     if !session.username
                         a(href='/login') Login
                 li
                     if !session.username
                         a(href='/register') Register
+                li
+                    if session.username
+                        a(href='/submissions') My Submissions
                 li
                     if session.username
                         a(href='/profile') Profile

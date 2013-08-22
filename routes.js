@@ -49,12 +49,25 @@ module.exports = function(app) {
     res.render('profile');
   });
 
-  app.get('/submissions', function(req, res){
+  app.get('/submissions', requireLogin, function(req, res){
     res.render('submissions');
   });
 
   app.get('/users', function(req, res){
-    res.render('users');
+    var UserSchema = schema.UserSchema;
+    var User = mongoose.model('User', UserSchema);
+  
+    // display users sorted by name
+    User.find({}, null, {sort: {name: 1}}, function(err, users) {
+        if (err) {
+            throw err;
+            console.log(err);
+        }
+        else {
+            console.log(users);
+            res.render('users', {users: users});
+        }
+    });
   });
 
   app.get('/logout', function(req, res){
