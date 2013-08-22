@@ -119,35 +119,54 @@ module.exports = function(app) {
   
       var user = new User();
 
-      user.name = form.name;
-      user.email = form.email;
-      user.institute = form.institute;
-      user.city = form.city;
-      user.roll = form.roll;
-      user.username = form.username;
-      user.privilege_level = config.PRIVILEGE_USER;
-      user.authcode = utils.generate_authcode();
+      // Check for duplicate usernames
+      var creds = {};
+      creds.username = form.username;
+      console.log(creds);
 
-      user.password = crypto.createHash('sha256').update(config.salt + form.pass1).digest('hex');
+      User.findOne(creds, function(err, result) {
+          if (err) {
+              throw err;
+              console.log(err);
+          }
+          else {
+              if (result) {
+                  // username already exists
+                  res.end("User name already exists in database, please choose a new one and try again.");
+              }
+              else {
+                user.name = form.name;
+                user.email = form.email;
+                user.institute = form.institute;
+                user.city = form.city;
+                user.roll = form.roll;
+                user.username = form.username;
+                user.privilege_level = config.PRIVILEGE_USER;
+                user.authcode = utils.generate_authcode();
 
-      user.save(function(err) {
-        if (err) {
-          throw err;
-          console.log(err);
-        } else {
-          console.log("New user added.");
-        }
+                user.password = crypto.createHash('sha256').update(config.salt + form.pass1).digest('hex');
+
+                user.save(function(err) {
+                  if (err) {
+                    throw err;
+                    console.log(err);
+                  } else {
+                    console.log("New user added.");
+                  }
+                });
+
+                // saved user to database, now redirect him
+                
+                var params = '?';
+                params += 'username=' + user.username;
+                params += '&authcode=' + user.authcode;
+
+                res.redirect('/register/success' + params);
+              }
+          }
       });
 
-      // saved user to database, now redirect him
-      
-      var params = '?';
-      params += 'username=' + user.username;
-      params += '&authcode=' + user.authcode;
-
-      res.redirect('/register/success' + params);
-  }
-
+    }
   });
 
   //
