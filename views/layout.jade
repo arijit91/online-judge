@@ -41,6 +41,9 @@ html
                         a(href='/profile') Profile
                 li
                     if session.username
+                        a(href='/admin') Admin Panel
+                li
+                    if session.username
                         a(href='/logout') Logout
                     
     div.container

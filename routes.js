@@ -62,7 +62,6 @@ module.exports = function(app) {
             console.log(err);
         }
         else {
-            console.log(users);
             res.render('users', {users: users});
         }
     });
@@ -70,6 +69,7 @@ module.exports = function(app) {
 
   app.get('/logout', function(req, res){
     delete req.session.username;
+    delete req.session.is_admin;
     res.redirect('/login');
   });
 

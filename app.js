@@ -71,6 +71,7 @@ function requireAdmin(req, res, next) {
 }
 
 app.use("/admin", requireAdmin);
+
 app.all("/admin/*", requireAdmin, function(req, res, next) {
     next();
 });
