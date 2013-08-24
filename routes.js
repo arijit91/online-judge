@@ -27,8 +27,38 @@ module.exports = function(app) {
     res.render('faq');
   });
 
-  app.get('/problems', function(req, res){
-    res.render('problems');
+  app.get('/problems', function(req, res) {
+    var ProblemSchema = schema.ProblemSchema;
+    var Problem = mongoose.model('Problem', ProblemSchema);
+  
+    // display problems sorted by name
+    Problem.find({}, null, {sort: {name: 1}}, function(err, problems) {
+        if (err) {
+            throw err;
+            console.log(err);
+        }
+        else {
+            res.render('problems', {problems: problems});
+        }
+    });
+  });
+
+  app.get('/problems/*', function(req, res) {
+    var ProblemSchema = schema.ProblemSchema;
+    var Problem = mongoose.model('Problem', ProblemSchema);
+
+    var prob = {};
+    prob.code = req.url.split('/problems/')[1];
+
+    Problem.findOne(prob, function(err, problem) {
+        if (err) {
+            throw err;
+            console.log(err);
+        }
+        else {
+            res.render('problem_page', {problem: problem, auto_grade: config.AUTO_GRADING, manual_grade: config.MANUAL_GRADING});
+        }
+    });
   });
 
   app.get('/submit', function(req, res){

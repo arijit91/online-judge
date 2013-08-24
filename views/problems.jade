@@ -1,5 +1,17 @@
 extends layout
 
 block content
-    p Problems Page
-
+  table.table.table-striped
+    th 
+    th Code
+    th Points
+    th Name
+    th Grading Type
+    - for (var i = 0; i < problems.length; i++)
+        tr
+            td #{i+1}
+            td #{problems[i].code}
+            td #{problems[i].points}
+            td 
+                a(href='/problems/#{problems[i].code}') #{problems[i].name}
+            td #{problems[i].grading_type}

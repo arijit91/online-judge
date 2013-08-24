@@ -1,0 +1,47 @@
+extends layout
+
+block content
+    div.row
+        h3 #{problem.name}
+        hr
+    div.row
+        h5 Problem Statement:
+        p #{problem.description}
+        hr
+    div.row
+        h5 Grading Type: #{problem.grading_type}
+        hr
+    if problem.grading_type == auto_grade
+        div.row
+            h5 Input Format
+            p #{problem.input_format}
+            hr
+        div.row
+            h5 Output Format
+            p #{problem.output_format}
+            hr
+        div.row
+            h5 Constraints
+            p #{problem.constraints}
+            hr
+        div.row
+            h5 Sample Input
+            p #{problem.sample_input}
+            hr
+        div.row
+            h5 Sample Output
+            p #{problem.sample_output}
+            hr
+        div.row
+            h5 Time Limit: #{problem.time_limit} second(s)
+            hr
+        div.row
+            h5 Number of Input Files: #{problem.num_input_files}
+            hr
+        div.row
+            h5 Weights of Input Files: #{problem.input_file_weights}
+            hr
+    
+    div.row
+        h5 Maximum possible points for this problem: #{problem.points}
+        hr
