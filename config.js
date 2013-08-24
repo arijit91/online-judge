@@ -20,4 +20,7 @@ config.passcode = "donotgivethistoastranger";
 config.PRIVILEGE_ADMIN = 0;
 config.PRIVILEGE_USER = 1;
 
+config.AUTO_GRADING = "Automatic Grading";
+config.MANUAL_GRADING = "Manual Grading";
+
 module.exports = config;
