@@ -2,6 +2,10 @@
     padding-top: 50px;
 }
 
+.small-button {
+    width: 100px;
+}
+
 form {
     margin: 0 auto;
     width: 600px;

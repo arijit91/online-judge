@@ -4,5 +4,41 @@ block content
     div.row
         h3 Welcome to the admin interface. What would you like to do?
     div.row
-        a.btn.btn-primary(href="/admin/problem/add/") Add a Problem
+        div.span2
+            a.btn.btn-primary.small-button(href="/admin/problem/add/") Add
+
+        div
+            p Add a problem not already existing in the database.
+    div.row
+        br
+        div.span2
+            a.btn.btn-primary.small-button(href="/admin/problem/edit/") Edit
+
+        div
+            p Edit details about a problem. For auto graded problems, a rejudge is sometimes needed after this.
+
+    div.row
+        br
+        div.span2
+            a.btn.btn-primary.small-button(href="/admin/problem/rejudge/") Rejudge
+
+        div
+            p Rejudge all submissions for a problem. Should be used in some situations where problem has been edited after submissions have already been made for it.
+
+
+    div.row
+        br
+        div.span2
+            a.btn.btn-primary.small-button(href="/admin/problem/delete/") Delete
+
+        div
+            p Delete a problem. Should NOT be used once people have submitted for the problem. Consider editing the problem to have 0 points and rejudging instead.
+
+    div.row
+        br
+        div.span2
+            a.btn.btn-primary.small-button(href="/admin/problem/grade/") Grade
+
+        div
+            p Assign marks to submissions for manually graded problems.
 
