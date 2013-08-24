@@ -1,12 +1,10 @@
 var crypto = require('crypto');
-var mongoose = require('mongoose');
-
 var config = require('./config');
+var mongoose = require('mongoose');
 
 // Excuse for not using password protection for MongoDB:
 // Make sure that only localhost can bind to it (mongodb.conf)
 // If someone has access to localhost, they can do worse damage anyway
-var db = mongoose.connect('mongodb://localhost/'+config.db);
 
 var schema = require('./schema');
 var utils = require('./utils');
@@ -182,8 +180,8 @@ module.exports = function(app) {
     }
   });
 
-  //
-  //app.get('/test', requireLogin, function(req, res){
-  //  res.render('test');
-  //});
+  app.get('/admin', function(req, res){
+    res.render('admin');
+  });
+
 };

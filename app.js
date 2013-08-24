@@ -3,12 +3,16 @@
  */
 
 var config = require('./config');
+var schema = require('./schema');
 
 var express = require('express');
 var http = require('http');
 var path = require('path');
 
 var app = express();
+
+var mongoose = require('mongoose');
+var db = mongoose.connect('mongodb://localhost/'+config.db);
 
 // all environments
 app.set('port', config.port);
@@ -28,6 +32,46 @@ app.use(express.session({secret: config.session_secret}));
 
 app.use(function(req, res, next) {
     res.locals.session = req.session;
+    next();
+});
+
+function requireAdmin(req, res, next) {
+    var user = req.session.username;
+    if (!user) {
+        res.send('You have to be logged in as admin for this');
+    }
+    else {
+        var UserSchema = schema.UserSchema;
+        var User = mongoose.model('User', UserSchema);
+      
+        var creds = {};
+        creds.username = user;
+        User.findOne(creds, function(err, doc) {
+            if (err) {
+                throw err;
+                console.log(err);
+            }
+            else {
+                if (doc) {
+                    // user found, check if he is admin
+                    if (doc.privilege_level == config.PRIVILEGE_ADMIN) {
+                        next();
+                    }
+                    else {
+                        res.send('You have to be logged in as admin for this');
+                    }
+                }
+                else {
+                    console.log("Should not come here!");
+                    res.status(500).end('Error 500: Server internal error');
+                }
+            }
+        });
+    }
+}
+
+app.use("/admin", requireAdmin);
+app.all("/admin/*", requireAdmin, function(req, res, next) {
     next();
 });
 
