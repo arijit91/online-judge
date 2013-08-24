@@ -7,9 +7,6 @@ Change privilege level of user in DB to get admin users.
 Make sure only localhost can bind to MongoDB.
 Add problems and start judge!
 
-Todo:
-Check for duplicate users asynchronously
-
 Vulnerabilities / stuff to be fixed (in a universe where time is present in abundance):
 Not using password protection for MongoDB, so make sure it is accessible only from localhost. (More at routes.js)
 Validate POST data for registration similar to how it was done on the front end.
@@ -22,6 +19,5 @@ Register admin user and give him admin privilieges.
 Add problems and start judge.
 
 Rejudging:
-No rejudging, since no time penalty. 
-Only needed when problem score gets changed or set to 0 (if problem deleted?).
-So, we need a recalculate function to change everyone's points.
+This needs to be looked at.
+Ideally, don't change stuff once the contest starts!

@@ -16,14 +16,15 @@ var UserSchema = new mongoose.Schema({
     creation_date: { type: Date, default: Date.now }
 });
 
-var ProblemsSchema = new mongoose.Schema({
+var ProblemSchema = new mongoose.Schema({
     name: String,
 
     // Required to be distinct
     code: String,
 
-    grading_type: String,
     description: String,
+    points: Number,
+    grading_type: String,
 
     // The stuff below makes sense only for auto grading
     input_format: String,
@@ -40,4 +41,4 @@ var ProblemsSchema = new mongoose.Schema({
 });
 
 exports.UserSchema = UserSchema;
-//exports.ProblemSchema = ProblemSchema;
+exports.ProblemSchema = ProblemSchema;

@@ -1,5 +1,146 @@
 extends layout
 
 block content
-    p Add a problem Page
+  form#problem-form.form-horizontal(method='post', enctype='multipart/form-data')
+    fieldset
+      legend Add a Problem
+      .control-group
+          label.control-label Problem Name
+          .controls
+            input(type='text', name='name', required='required', data-validation-required-message='Required')
+            p.help-block
+
+      .control-group
+          label.control-label Problem Code
+          .controls
+            input(type='text', name='code', pattern='[a-zA-Z0-9]*', data-validation-pattern-message='Only alphanumeric characters allowed', required='required', data-validation-required-message='Required')
+            p.help-block
+
+        .control-group
+            label.control-label Problem Description
+            .controls
+                textarea(name='description')
+
+        .control-group
+            label.control-label Points for Problem
+            .controls
+                input(name='points', type='number', required='required',
+                    data-validation-required-message='Required')
+
+        .control-group
+            label.control-label Grading Type
+            .controls
+                select(name='grading_type', id='grading_type')
+                    option(onclick="show_stuff()") #{auto_grade}
+                    option(onclick="hide_stuff()") #{manual_grade}
+
+        div#optional
+            .control-group
+                label.control-label Input Format
+                .controls
+                    textarea(name='input_format')
+
+            .control-group
+                label.control-label Output Format
+                .controls
+                    textarea(name='output_format')
+
+            .control-group
+                label.control-label Constraints
+                .controls
+                    textarea(name='constraints')
+
+            .control-group
+                label.control-label Time Limit in Seconds
+                .controls
+                    select(name='time_limit', id='time_limit')
+                        - for (var i = 1; i <= 10; i++)
+                            option #{i}
+
+            .control-group
+                label.control-label Sample Input
+                .controls
+                    textarea(name='sample_input')
+
+            .control-group
+                label.control-label Sample Output
+                .controls
+                    textarea(name='sample_output')
+
+            .control-group
+                label.control-label Number of Input Files
+                .controls
+                    select(name='num_input_files', id='num_input_files')
+                        - for (var i = 1; i <= 10; i++)
+                            option(onclick="stuff(#{i})") #{i}
+
+            .control-group
+                label.control-label Input Files
+                .controls
+                    - for (var i = 1; i <= 10; i++)
+                        - var file_name = 'infile' + i;
+                        input(type='file', id=file_name, name=file_name)
+
+            .control-group
+                label.control-label Output Files
+                .controls
+                    - for (var i = 1; i <= 10; i++)
+                        - var file_name = 'outfile' + i;
+                        input(type='file', id=file_name, name=file_name)
+
+            .control-group
+                label.control-label Weights for Input Files (must sum up to 100)
+                .controls
+                    - for (var i = 1; i <= 10; i++)
+                        - var weight_name = 'weight' + i;
+                        select(name=weight_name, id=weight_name)
+                            - for (var j = 0; j <= 100; j++)
+                                option #{j}
+
+      input.btn.btn-primary(type='submit', value='Submit', id='submit')
+
+    fieldset
+  form
+
+  script.
+    window.onload = function() {
+        // Initially only one of them is visible
+        for (var i = 2; i <= 10; i++) {
+            document.getElementById("infile" + i).style.display = "none";
+            document.getElementById("outfile" + i).style.display = "none";
+            document.getElementById("weight" + i).style.display = "none";
+        }
+        document.getElementById("weight1").value = 100;
+    }
+    function stuff(num) {
+        // File upload stuff
+        for (var i = 1; i <= num; i++) {
+            document.getElementById("infile" + i).style.display = "block";
+            document.getElementById("outfile" + i).style.display = "block";
+            document.getElementById("weight" + i).style.display = "block";
+        }
+        for (var i = num+1; i <= 10; i++) {
+            document.getElementById("infile" + i).style.display = "none";
+            document.getElementById("outfile" + i).style.display = "none";
+            document.getElementById("weight" + i).style.display = "none";
+        }
+        // Weight stuff
+        var tot = 100;
+        var wt = Math.floor(100 / num);
+        for (var i = 1; i <= num; i++) {
+            if (i + 1 <= num) {
+                document.getElementById("weight"+i).value = wt;
+            }
+            else {
+                document.getElementById("weight"+i).value = tot;
+            }
+            tot -= wt;
+        }
+    }
+    function show_stuff() { 
+        document.getElementById("optional").style.display="block";
+    }
+    function hide_stuff() { 
+        document.getElementById("optional").style.display="none";
+    }
 

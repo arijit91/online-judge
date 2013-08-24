@@ -91,7 +91,7 @@ http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 
   process.setgid(config.gid);
-  process.setgid(config.uid);
+  process.setuid(config.uid);
   console.log('Dropping privileges to ' + config.gid + ', ' + config.uid)
 
   console.log('\nMode: ' + app.get('env'));

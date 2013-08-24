@@ -11,7 +11,6 @@ $("input,textarea,select").jqBootstrapValidation(
 }); 
 
 $(document).ready(function() {
-
     // Whether to display error text or not for logging in
     var url = window.location;
     var location = url.pathname;

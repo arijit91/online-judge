@@ -27,6 +27,14 @@ form#login-form .btn {
     margin-left: 220px;
 }
 
+form#problem-form .control-group {
+    margin-bottom: 10px;
+}
+
+form#problem-form .btn {
+    margin-left: 220px;
+}
+
 form#login-form #error-msg {
     margin-left: 70px;
     color: red;
