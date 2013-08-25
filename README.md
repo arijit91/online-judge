@@ -1,6 +1,6 @@
 Online Judge for programming contests.
 
-How to setup:
+How to Setup:
 Clone repo, install required node modules.
 Create database in MongoDB with name specified in config.js
 Change privilege level of user in DB to get admin users.
