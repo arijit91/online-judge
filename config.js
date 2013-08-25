@@ -23,4 +23,18 @@ config.PRIVILEGE_USER = 1;
 config.AUTO_GRADING = "Automatic Grading";
 config.MANUAL_GRADING = "Manual Grading";
 
+config.languages = ["C", "C++", "Java"];
+
+config.judge_statuses = {
+    QUEUED : "Queued",
+    RUNNING : "Running",
+    COMPUTER_GRADED : "Computer Graded",
+    TLE : "Time Limit Exceeded",
+    CE : "Compile Error",
+    RTE : "Run Time Error",
+    MANUAL_GRADE_PENDING : "Manual Grade Pending",
+    MANUALLY_GRADED : "Manually Graded"
+};
+
+
 module.exports = config;
