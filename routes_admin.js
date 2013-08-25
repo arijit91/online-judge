@@ -1,6 +1,7 @@
+var fs = require('fs');
+var async = require('async');
 var mongoose = require('mongoose');
 var mkdirp = require('mkdirp');
-var fs = require('fs');
 
 var config = require('./config');
 var schema = require('./schema');
@@ -101,4 +102,142 @@ module.exports = function(app) {
         }
     });
    }); 
+
+  app.get('/admin/problem/grade', function(req, res){
+    var ProblemSchema = schema.ProblemSchema;
+    var Problem = mongoose.model('Problem', ProblemSchema);
+  
+    // display problems sorted by name
+    Problem.find({}, null, {sort: {name: 1}}, function(err, problems) {
+        if (err) {
+            throw err;
+            console.log(err);
+        }
+        else {
+            res.render('admin_problem_grade', {problems: problems});
+        }
+    });
+  });
+
+  app.get('/admin/problem/grade/*/*', function(req, res){
+      var extra = req.url.split('/admin/problem/grade/')[1];
+      var problem_code = extra.split('/')[0];
+      var user_name = extra.split('/')[1];
+
+      var ManualGradeSchema = schema.ManualGradeSchema;
+      var ManualGrade = mongoose.model('ManualGrade', ManualGradeSchema);
+
+      var grade = {problem_code: problem_code, username: user_name};
+
+
+      ManualGrade.findOne(grade, function(err, grade){
+          if (err) {
+              throw err;
+              console.log(err);
+          }
+          else {
+              var params = {problem_code: problem_code, username: user_name};
+              if (!grade) {
+                  params.graded = false;
+              }
+              else {
+                  params.graded = true;
+                  params.score = grade.score;
+              }
+
+              // Get submissions of user for problem latest to earliest
+              var SubmissionSchema = schema.SubmissionSchema;
+              var Submission = mongoose.model('Submission', SubmissionSchema);
+
+              var query = {problem_code: problem_code, username: user_name};
+
+              Submission.find(query, 'submission_date filename', {sort: {submission_date: -1}}, 
+                function(err, subs) {
+                    if (err) {
+                        throw err;
+                        console.log(err);
+                    }
+                    else {
+                        var num_subs = subs.length;
+                        params.num_subs = num_subs;
+                        params.submission_date = [];
+
+                        for (var i = 0; i < num_subs; i++) {
+                            params.submission_date.push(subs[i].submission_date);
+                        }
+
+                        // Use an async task to get the contents of the files
+                        var calls = [];
+                        for (var i = 0; i < num_subs; i++) {
+                            // weird closure thingy is weird
+                            calls.push((function(index) {
+                                return function(callback) {
+                                    var path = __dirname + '/uploads/submissions/' + subs[index].filename;
+                                    fs.readFile(path, function(err, data) {
+                                        if (err) {
+                                            throw err;
+                                            console.log(err);
+                                        }
+                                        else {
+                                            // converting buffer to string
+                                            callback(null, data);
+                                        }
+                                    });
+                                }
+                            })(i));
+                        }
+
+                        async.series(calls, function(err, stuff) {
+                            if (err) {
+                                throw err;
+                                console.log(err);
+                            }
+                            else {
+                                params.files = stuff;
+                                res.render('admin_problem_grade_user', params);
+                            }
+                        });
+                    }
+                });
+          }
+      });
+  });
+
+  app.get('/admin/problem/grade/*', function(req, res){
+    var ProblemSchema = schema.ProblemSchema;
+    var Problem = mongoose.model('Problem', ProblemSchema);
+
+    var prob = {};
+    prob.code = req.url.split('/admin/problem/grade/')[1];
+
+    Problem.findOne(prob, function(err, problem) {
+        if (err) {
+            throw err;
+            console.log(err);
+        }
+        else {
+            if (!problem) {
+                res.end("Problem does not exist.");
+                return ;
+            }
+            if (problem.grading_type != config.MANUAL_GRADING) {
+                res.end("Not a manually graded problem.");
+                return ;
+            }
+
+            var UserSchema = schema.UserSchema;
+            var User = mongoose.model('User', UserSchema);
+
+            User.find({}, null, {sort: {name: 1}}, function(err, users) {
+                if (err) {
+                    throw err;
+                    console.log(err);
+                }
+                else {
+                    res.render('admin_problem_grade_page', {users: users, problem: problem});
+                }
+            });
+        }
+    });
+  });
 }

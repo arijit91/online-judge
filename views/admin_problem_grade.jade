@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h3 Which problem would you like to grade?
+  table.table.table-striped
+    th Problem Name
+    th Points
+    th Problem Code
+    - for (var i = 0; i < problems.length; i++)
+        - if(problems[i].grading_type == config.MANUAL_GRADING)
+            tr
+              td 
+                  a(href='/admin/problem/grade/#{problems[i].code}') #{problems[i].name}
+              td #{problems[i].points}
+              td #{problems[i].code}

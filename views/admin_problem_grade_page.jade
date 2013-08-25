@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h3 Who would you like to grade for the problem #{problem.name}?
+  table.table.table-striped
+    th Name
+    th Login Name
+    - for (var i = 0; i < users.length; i++)
+        tr
+                td 
+                    a(href='/admin/problem/grade/#{problem.code}/#{users[i].username}') #{users[i].name}
+                td #{users[i].username}
