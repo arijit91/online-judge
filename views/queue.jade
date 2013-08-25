@@ -1,5 +1,16 @@
 extends layout
 
 block content
-    p Queue Page
-
+  table.table.table-striped
+    th 
+    th User
+    th Problem
+    th Language
+    th Status
+    - for (var i = 0; i < subs.length; i++)
+        tr
+            td #{i+1}
+            td #{subs[i].username}
+            td #{subs[i].problem_code}
+            td #{subs[i].language}
+            td #{subs[i].judge_status}

@@ -32,6 +32,7 @@ app.use(express.session({secret: config.session_secret}));
 
 app.use(function(req, res, next) {
     res.locals.session = req.session;
+    res.locals.config = config;
     next();
 });
 

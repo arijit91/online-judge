@@ -1,4 +1,26 @@
 extends layout
 
 block content
-  p Submit page
+  form#submit-form.form-horizontal(method='post', enctype='multipart/form-data')
+    fieldset
+      legend Submit Solution
+      .control-group
+          label.control-label Problem Code
+          .controls
+              select(name='problem_code', id='problem_code')
+                - for (var i = 0; i < problems.length; i++)
+                    option #{problems[i].code}
+
+      .control-group
+          label.control-label Language
+          .controls
+              select(name='language', id='language')
+                - for (var i = 0; i < config.languages.length; i++)
+                    option #{config.languages[i]}
+
+      .control-group
+          label.control-label Submission
+          .controls
+            input(type='file', id='file', name='file', required='Required')
+
+      input.btn.btn-primary(type='submit', value='Submit', id='submit')

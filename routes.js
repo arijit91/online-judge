@@ -1,11 +1,12 @@
 var crypto = require('crypto');
-var config = require('./config');
 var mongoose = require('mongoose');
+var fs = require('fs');
 
 // Excuse for not using password protection for MongoDB:
 // Make sure that only localhost can bind to it (mongodb.conf)
 // If someone has access to localhost, they can do worse damage anyway
 
+var config = require('./config');
 var schema = require('./schema');
 var utils = require('./utils');
 
@@ -56,17 +57,118 @@ module.exports = function(app) {
             console.log(err);
         }
         else {
+            if (!problem) {
+                res.end("Problem does not exist.");
+                return ;
+            }
             res.render('problem_page', {problem: problem, auto_grade: config.AUTO_GRADING, manual_grade: config.MANUAL_GRADING});
         }
     });
   });
 
-  app.get('/submit', function(req, res){
-    res.render('submit');
+  app.get('/submit', requireLogin, function(req, res){
+    var ProblemSchema = schema.ProblemSchema;
+    var Problem = mongoose.model('Problem', ProblemSchema);
+  
+    // display problems sorted by name
+    Problem.find({}, null, {sort: {name: 1}}, function(err, problems) {
+        if (err) {
+            throw err;
+            console.log(err);
+        }
+        else {
+            res.render('submit', {problems: problems});
+        }
+    });
+  });
+
+  function invalid(lang) {
+      for (var i = 0; i < config.languages.length; i++) {
+          if (lang == config.languages[i])
+              return false;
+      }
+      return true;
+  }
+
+  app.post('/submit', requireLogin, function(req, res){
+    var ProblemSchema = schema.ProblemSchema;
+    var Problem = mongoose.model('Problem', ProblemSchema);
+
+    var form = req.body;
+
+    var prob = {};
+    prob.code = form.problem_code;
+
+    // Some server side validation.
+    Problem.findOne(prob, function(err, problem) {
+        if (err) {
+            throw err;
+            console.log(err);
+        }
+        else {
+            if (!problem) {
+                res.end("Problem does not exist.");
+                return ;
+            }
+            if (invalid(form.language)) {
+                res.end("Language does not exist.");
+                return ;
+            }
+
+            // Language and Problem is valid, client ensures file is present
+            // Create submission
+            var SubmissionSchema = schema.SubmissionSchema;
+            var Submission = mongoose.model('Submission', SubmissionSchema);
+
+            var submission = new Submission();
+            submission.problem_code = form.problem_code;
+            submission.username = req.session.username;
+            submission.language = form.language;
+            submission.grading_type = problem.grading_type;
+
+            if (submission.grading_type == config.AUTO_GRADING) {
+                submission.judge_status = config.judge_statuses.QUEUED;
+            }
+            else {
+                submission.judge_status = config.judge_statuses.MANUAL_GRADE_PENDING;
+            }
+
+            var filename = utils.generate_filename(form.language);
+            submission.filename = filename;
+
+            submission.save(function(err) {
+                if (err) {
+                    throw err;
+                    console.log(err);
+                }
+                else {
+                    console.log("Submission: " + submission.filename);
+                    var basedir = __dirname + '/uploads/submissions';
+
+                    var data = fs.readFileSync(req.files["file"].path);
+                    var newPath = basedir + '/' + filename;
+                    fs.writeFileSync(newPath, data);
+                    res.redirect('/queue');
+                }
+            });
+        }
+    });
+
   });
 
   app.get('/queue', function(req, res){
-    res.render('queue');
+    var SubmissionSchema = schema.SubmissionSchema;
+    var Submission = mongoose.model('Submission', SubmissionSchema);
+  
+    Submission.find({}, null, {sort: {submission_date: -1}}, function(err, subs) {
+        if (err) {
+            throw err;
+            console.log(err);
+        }
+        else {
+            res.render('queue', {subs: subs});
+        }
+    });
   });
 
   app.get('/standings', function(req, res){

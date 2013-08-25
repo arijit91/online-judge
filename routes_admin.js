@@ -96,7 +96,7 @@ module.exports = function(app) {
                   }
               });
 
-              res.redirect('/admin/problem/edit');
+              res.redirect('/problems');
             }
         }
     });

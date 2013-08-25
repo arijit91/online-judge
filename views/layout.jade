@@ -22,7 +22,8 @@ html
                 li
                     a(href='/problems') Problems
                 li
-                    a(href='/submit') Submit
+                    if session.username
+                        a(href='/submit') Submit
                 li
                     a(href='/queue') Queue
                 li
