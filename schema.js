@@ -57,6 +57,8 @@ var SubmissionSchema = new mongoose.Schema({
 
     // Result of manual grading
     judge_result_manual: Number,
+
+    compile_error: String,
 });
 
 var ManualGradeSchema = new mongoose.Schema({

@@ -23,7 +23,8 @@ config.PRIVILEGE_USER = 1;
 config.AUTO_GRADING = "Automatic Grading";
 config.MANUAL_GRADING = "Manual Grading";
 
-config.languages = ["C", "C++", "Java"];
+// config.languages = ["C", "C++", "Java"];
+config.languages = ["C", "C++"];
 
 config.judge_statuses = {
     QUEUED : "Queued",
