@@ -24,11 +24,14 @@ db = client['judge']
 submissions = db.submissions
 problems = db.problems
 scores = db.scores
+manualgrades = db.manualgrades
+users = db.users
 
 submissions.create_index([('submission_date', ASCENDING)])
 scores.create_index([('score', DESCENDING)])
 
 problem_list = [problem for problem in problems.find({})]
+user_list = [user for user in users.find({})]
 
 basedir = os.getcwd()
 
@@ -116,9 +119,23 @@ def judge_submission(sub):
     print
 
 def get_score(username, problem):
-  print "Finding score for %s for problem %s" % (username, problem['code'])
   if (problem['grading_type'] == MANUAL_GRADING):
-    return 0
+    query = {'problem_code': problem['code'], 'username': username}
+    res = manualgrades.find_one(query)
+
+    if (not res):
+      return 0
+
+    score = res['score']
+
+    # Update all submissions for the problem
+    for sub in submissions.find(query):
+      submissions.update(sub, {"$set": {
+        'judge_status': judge_statuses['MANUALLY_GRADED'],
+        'judge_result_manual': score}})
+
+    return score
+
   if (problem['grading_type'] == AUTO_GRADING):
     # Get all graded submissions for the problem
     subs = [sub for sub in submissions.find({
@@ -142,7 +159,7 @@ def get_score(username, problem):
 
     assert(problem['num_input_files'] == len(sub['judge_result_auto']) == len(problem['input_file_weights']))
     for i in xrange(problem['num_input_files']):
-      print problem['input_file_weights'][i], sub['judge_result_auto'][i]
+      #print problem['input_file_weights'][i], sub['judge_result_auto'][i]
       res += problem['input_file_weights'][i] * sub['judge_result_auto'][i]
 
     res /= 100.0
@@ -152,23 +169,32 @@ def get_score(username, problem):
 
 def update_score(username):
   score = 0
+  #print username
   for problem in problem_list:
     sc = get_score(username, problem)
     score += sc
 
-    print problem['name'], sc
+    #print problem['name'], sc
 
   
   s = scores.find_one({'username': username})
   if s:
+    if s['score'] != score:
+      print "%s: Old Score: %d, New Score: %d" % (username, s['score'], score)
     scores.update(s, {"$set": {'score': score}})
   else:
+    print "%s: Score: %d" % (username, score)
     scores.insert({'username': username, 'score': score})
 
-  print 
+  #print 
 
 while 1:
+  # Auto graded stuff
   subs = submissions.find({'judge_status': judge_statuses['QUEUED']}).sort('submission_date')
   for sub in subs:
     judge_submission(sub)
     update_score(sub['username'])
+
+  # Handles manual graded stuff also
+  for user in user_list:
+    update_score(user['username'])
