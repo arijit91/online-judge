@@ -157,6 +157,13 @@ module.exports = function(app) {
   });
 
   app.get('/queue', function(req, res){
+    res.redirect('/queue/1');
+  });
+
+  app.get('/queue/:page', function(req, res){
+    var num_subs_per_page = 11;
+    var page = parseInt(req.params['page']);
+
     var SubmissionSchema = schema.SubmissionSchema;
     var Submission = mongoose.model('Submission', SubmissionSchema);
   
@@ -166,7 +173,19 @@ module.exports = function(app) {
             console.log(err);
         }
         else {
-            res.render('queue', {subs: subs});
+            lo = (page - 1)*num_subs_per_page;
+            hi = Math.min(subs.length, lo + num_subs_per_page)
+
+            var length = hi - lo + 1;
+            var start = subs.length - lo;
+            
+            var first = 1;
+            var last = Math.ceil(subs.length / num_subs_per_page);
+            var prev = Math.max(page - 1, first);
+            var next = Math.min(page + 1, last);
+
+            res.render('queue', {subs: subs.slice(lo, hi), start: start,
+              first: first, last: last, prev: prev, next: next});
         }
     });
   });

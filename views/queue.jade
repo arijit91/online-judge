@@ -1,18 +1,26 @@
 extends layout
 
 block content
-  table.table.table-striped
-    th 
-    th User
-    th Problem
-    th Language
-    th Status
-    th Timestamp
-    - for (var i = 0; i < subs.length; i++)
-        tr
-            td #{i+1}
-            td #{subs[i].username}
-            td #{subs[i].problem_code}
-            td #{subs[i].language}
-            td #{subs[i].judge_status}
-            td #{subs[i].submission_date}
+  div.row
+    table.table.table-striped
+      caption
+        h5 Submissions
+      th ID
+      th User
+      th Problem
+      th Language
+      th Status
+      th Timestamp
+      - for (var i = 0; i < subs.length; i++)
+          tr
+              td #{start-i}
+              td #{subs[i].username}
+              td #{subs[i].problem_code}
+              td #{subs[i].language}
+              td #{subs[i].judge_status}
+              td #{subs[i].submission_date}
+  div.row
+    a.btn.btn-primary(href='/queue/'+first) First Page
+    a.btn.btn-primary(href='/queue/'+prev).offset2 Previous Page
+    a.btn.btn-primary(href='/queue/'+next).offset2 Next Page
+    a.btn.btn-primary(href='/queue/'+last).offset2 Last Page
