@@ -47,6 +47,10 @@ form#problem-form .btn {
     margin-left: 220px;
 }
 
+form#grade-form .control-group {
+    margin-bottom: 10px;
+}
+
 form#login-form #error-msg {
     margin-left: 70px;
     color: red;
