@@ -191,7 +191,17 @@ module.exports = function(app) {
   });
 
   app.get('/submissions', requireLogin, function(req, res){
-    res.render('submissions');
+    var SubmissionSchema = schema.SubmissionSchema;
+    var Submission = mongoose.model('Submission', SubmissionSchema);
+  
+    query = {username: req.session.username}
+    Submission.find(query, null, {sort: {submission_date: -1}}, function(err, subs) {
+        if (err) {
+            throw err;
+            console.log(err);
+        }
+        res.render('submissions', {subs: subs});
+    });
   });
 
   app.get('/users', function(req, res){
