@@ -9,7 +9,7 @@ block content
     th Language
     th Status
     th Result
-    th Timestamp
+    th Compile Output
     - for (var i = 0; i < subs.length; i++)
         tr
             td #{i+1}
@@ -20,12 +20,12 @@ block content
                 td #{subs[i].judge_result_manual}
             - if (subs[i].grading_type == config.AUTO_GRADING)
                 td #{subs[i].judge_result_auto}
-            td #{subs[i].submission_date}
+            td #{subs[i].compile_error}
 
   hr
 
   ul 
-    h4 Note
+    h4 Notes
     li Result for a Manually Graded problem denotes the marks given to you for the problem. It may change if the evaluator decides to change your score.
     li Result for an Auto Graded problem is a boolean array giving the results of your program for each input file it ran on. You may calculate your score for the problem using this array, the weights of the input files (given in the problem statement) and the total points for the problem (also mentioned in the problem statement)
     li Only your last submission is considered while calculating your score for an Auto Graded Problem.
