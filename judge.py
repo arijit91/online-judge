@@ -14,13 +14,21 @@ judge_statuses = {
     "MANUAL_GRADE_PENDING" : "Manual Grade Pending",
     "MANUALLY_GRADED" : "Manually Graded"
 };
+AUTO_GRADING = "Automatic Grading"
+MANUAL_GRADING = "Manual Grading"
 ###
 
 
 db = client['judge']
+
 submissions = db.submissions
 problems = db.problems
+scores = db.scores
+
 submissions.create_index([('submission_date', ASCENDING)])
+scores.create_index([('score', DESCENDING)])
+
+problem_list = [problem for problem in problems.find({})]
 
 basedir = os.getcwd()
 
@@ -76,12 +84,14 @@ def judge_submission(sub):
       if (output == 'tle'):
         print "Time Limit Exceeded"
         submissions.update(sub, {"$set": {'judge_status': judge_statuses['TLE']}})
-        break
+        print
+        return 
 
       elif (output != 'ok'):
         print "Run Time Error"
         submissions.update(sub, {"$set": {'judge_status': judge_statuses['RTE']}})
-        break
+        print
+        return 
 
     
     # All programs have completed running within time. But how have they done?
@@ -105,8 +115,60 @@ def judge_submission(sub):
 
     print
 
+def get_score(username, problem):
+  print "Finding score for %s for problem %s" % (username, problem['code'])
+  if (problem['grading_type'] == MANUAL_GRADING):
+    return 0
+  if (problem['grading_type'] == AUTO_GRADING):
+    # Get all graded submissions for the problem
+    subs = [sub for sub in submissions.find({
+      'username': username,
+      'problem_code': problem['code']}).sort('submission_date')]
+
+    # We're interested in the latest submission which was judged
+    while(len(subs) > 0 and (subs[-1]['judge_status']  in [judge_statuses['QUEUED'], judge_statuses['RUNNING']])):
+      subs.pop()
+
+    if (len(subs) == 0):
+      return 0
+
+    sub = subs[-1]
+    if (sub['judge_status'] != judge_statuses['COMPUTER_GRADED']):
+      return 0
+
+    # Submission 'accepted', calculate score
+
+    res = 0
+
+    assert(problem['num_input_files'] == len(sub['judge_result_auto']) == len(problem['input_file_weights']))
+    for i in xrange(problem['num_input_files']):
+      print problem['input_file_weights'][i], sub['judge_result_auto'][i]
+      res += problem['input_file_weights'][i] * sub['judge_result_auto'][i]
+
+    res /= 100.0
+    res *= problem['points']
+
+    return res
+
+def update_score(username):
+  score = 0
+  for problem in problem_list:
+    sc = get_score(username, problem)
+    score += sc
+
+    print problem['name'], sc
+
+  
+  s = scores.find_one({'username': username})
+  if s:
+    scores.update(s, {"$set": {'score': score}})
+  else:
+    scores.insert({'username': username, 'score': score})
+
+  print 
 
 while 1:
   subs = submissions.find({'judge_status': judge_statuses['QUEUED']}).sort('submission_date')
   for sub in subs:
     judge_submission(sub)
+    update_score(sub['username'])

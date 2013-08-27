@@ -1,5 +1,12 @@
 extends layout
 
 block content
-    p Standings Page
-
+  table.table.table-striped
+    th Rank
+    th User
+    th Score
+    - for (var i = 0; i < scores.length; i++)
+        tr
+            td #{i+1}
+            td #{scores[i].username}
+            td #{scores[i].score}

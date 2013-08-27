@@ -172,7 +172,18 @@ module.exports = function(app) {
   });
 
   app.get('/standings', function(req, res){
-    res.render('standings');
+    var ScoreSchema = schema.ScoreSchema;
+    var Score = mongoose.model('Score', ScoreSchema);
+  
+    Score.find({}, null, {sort: {score: -1, username: 1}}, function(err, scores) {
+        if (err) {
+            throw err;
+            console.log(err);
+        }
+        else {
+            res.render('standings', {scores: scores});
+        }
+    });
   });
 
   app.get('/profile', requireLogin, function(req, res){

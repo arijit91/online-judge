@@ -67,7 +67,13 @@ var ManualGradeSchema = new mongoose.Schema({
     score: Number
 });
 
+var ScoreSchema = new mongoose.Schema({
+    username: String,
+    score: Number
+});
+
 exports.UserSchema = UserSchema;
 exports.ProblemSchema = ProblemSchema;
 exports.SubmissionSchema = SubmissionSchema;
 exports.ManualGradeSchema = ManualGradeSchema;
+exports.ScoreSchema = ScoreSchema;
