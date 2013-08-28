@@ -50,6 +50,47 @@ module.exports = function(app) {
     });
   });
 
+  app.get('/admin/problem/delete', function(req, res){
+    var ProblemSchema = schema.ProblemSchema;
+    var Problem = mongoose.model('Problem', ProblemSchema);
+  
+    // display problems sorted by name
+    Problem.find({}, null, {sort: {name: 1}}, function(err, problems) {
+        if (err) {
+            throw err;
+            console.log(err);
+        }
+        else {
+            res.render('admin_problem_delete', {problems: problems});
+        }
+    });
+  });
+
+  app.get('/admin/problem/delete/:problem', function(req, res){
+    var code = req.params['problem'];
+
+    var ProblemSchema = schema.ProblemSchema;
+    var Problem = mongoose.model('Problem', ProblemSchema);
+    var query = {code: code};
+  
+    // display problems sorted by name
+    Problem.findOne(query, function(err, problem) {
+      if (err || !problem) {
+        res.end("Bad problem code. Cannot delete.");
+        return ;
+      }
+      Problem.remove(problem, function(err) {
+        if (err) {
+          throw err;
+          console.log(err);
+        }
+        console.log("Problem deleted.");
+        res.redirect('/problems');
+      });
+    });
+  });
+
+
   app.post('/admin/problem/edit/:problem', function(req, res, next) {
     var form = req.body;
 

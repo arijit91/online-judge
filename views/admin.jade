@@ -15,7 +15,7 @@ block content
             a.btn.btn-primary.small-button(href="/admin/problem/edit/") Edit
 
         div
-            p Edit details of a problem.
+            p Edit details of a problem (apart from input files and their weights). Automatically recalculates scores once problem is edited.
 
     div.row
         br
@@ -23,7 +23,7 @@ block content
             a.btn.btn-primary.small-button(href="/admin/problem/delete/") Delete
 
         div
-            p Delete a problem. Should NOT be used once people have submitted for the problem. Consider editing the problem to have 0 points instead.
+            p Delete a problem. <span style='font-weight:bold'>Do not use if people have already submitted for this problem!</span> Edit the problem to have 0 points instead.
 
     div.row
         br
