@@ -2,9 +2,9 @@ extends layout
 
 block content
   div.row
-    table.table.table-striped
+    table.table.table-striped.table-bordered
       caption
-        h5 Submissions
+        h4 Submissions
       th ID
       th User
       th Problem
@@ -12,13 +12,25 @@ block content
       th Status
       th Timestamp
       - for (var i = 0; i < subs.length; i++)
-          tr
-              td #{start-i}
-              td #{subs[i].username}
-              td #{subs[i].problem_code}
-              td #{subs[i].language}
-              td #{subs[i].judge_status}
-              td #{subs[i].submission_date}
+          - if (subs[i].judge_status == config.judge_statuses.COMPUTER_GRADED) {
+          -   color_class = 'success';
+          - }
+          - else if (subs[i].judge_status == config.judge_statuses.MANUALLY_GRADED) {
+          -   color_class = 'success';
+          - }
+          - else if (subs[i].judge_status == config.judge_statuses.QUEUED) {
+          -   color_class = 'warning';
+          - }
+          - else {
+          -   color_class = 'error';
+          - }
+          tr(class = color_class)
+            td #{start-i}
+            td #{subs[i].username}
+            td #{subs[i].problem_code}
+            td #{subs[i].language}
+            td #{subs[i].judge_status}
+            td #{subs[i].submission_date}
   div.row
     a.btn.btn-primary(href='/queue/'+first) First Page
     a.btn.btn-primary(href='/queue/'+prev).offset2 Previous Page

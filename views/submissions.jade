@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  table.table.table-striped
+  table.table.table-striped.table-bordered
     caption
       h4 My Submissions
     th 
@@ -11,16 +11,28 @@ block content
     th Result
     th Compile Output
     - for (var i = 0; i < subs.length; i++)
-        tr
-            td #{i+1}
-            td #{subs[i].problem_code}
-            td #{subs[i].language}
-            td #{subs[i].judge_status}
-            - if (subs[i].grading_type == config.MANUAL_GRADING)
-                td #{subs[i].judge_result_manual}
-            - if (subs[i].grading_type == config.AUTO_GRADING)
-                td #{subs[i].judge_result_auto}
-            td #{subs[i].compile_error}
+          - if (subs[i].judge_status == config.judge_statuses.COMPUTER_GRADED) {
+          -   color_class = 'success';
+          - }
+          - else if (subs[i].judge_status == config.judge_statuses.MANUALLY_GRADED) {
+          -   color_class = 'success';
+          - }
+          - else if (subs[i].judge_status == config.judge_statuses.QUEUED) {
+          -   color_class = 'warning';
+          - }
+          - else {
+          -   color_class = 'error';
+          - }
+          tr(class = color_class)
+              td #{i+1}
+              td #{subs[i].problem_code}
+              td #{subs[i].language}
+              td #{subs[i].judge_status}
+              - if (subs[i].grading_type == config.MANUAL_GRADING)
+                  td #{subs[i].judge_result_manual}
+              - if (subs[i].grading_type == config.AUTO_GRADING)
+                  td #{subs[i].judge_result_auto}
+              td #{subs[i].compile_error}
 
   hr
 
