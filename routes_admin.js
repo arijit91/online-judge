@@ -239,7 +239,7 @@ module.exports = function(app) {
     var ProblemSchema = schema.ProblemSchema;
     var Problem = mongoose.model('Problem', ProblemSchema);
   
-    // display problems sorted by name
+    // problems sorted by name
     Problem.find({}, null, {sort: {name: 1}}, function(err, problems) {
         if (err) {
             throw err;
