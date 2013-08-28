@@ -17,8 +17,4 @@ To be used when you want to restart the contest.
 Take a database dump.
 Delete all the collections.
 Register admin user and give him admin privilieges.
-Add problems and start judge.
-
-Rejudging:
-This needs to be looked at.
-Ideally, don't change stuff once the contest starts!
+Add problems and start judge!

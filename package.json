@@ -7,6 +7,10 @@
   },
   "dependencies": {
     "express": "3.3.5",
-    "jade": "*"
+    "jade": "0.34.1",
+    "async": "0.2.9",
+    "mkdirp": "0.3.5",
+    "mongoose": "3.6.17",
+    "crypto": "0.0.3"
   }
 }
