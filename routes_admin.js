@@ -15,6 +15,97 @@ module.exports = function(app) {
     res.render('admin_problem_add', { auto_grade: config.AUTO_GRADING, manual_grade:
         config.MANUAL_GRADING});
   });
+
+  app.get('/admin/problem/edit/:problem', function(req, res){
+    var code = req.params['problem'];
+
+    var ProblemSchema = schema.ProblemSchema;
+    var Problem = mongoose.model('Problem', ProblemSchema);
+    var query = {code: code};
+  
+    // display problems sorted by name
+    Problem.findOne(query, function(err, problem) {
+      if (err || !problem) {
+        res.end("Bad problem code.");
+        return ;
+      }
+      res.render('admin_problem_edit_problem', { auto_grade: config.AUTO_GRADING, manual_grade:
+          config.MANUAL_GRADING, problem: problem});
+    });
+  });
+
+  app.get('/admin/problem/edit', function(req, res){
+    var ProblemSchema = schema.ProblemSchema;
+    var Problem = mongoose.model('Problem', ProblemSchema);
+  
+    // display problems sorted by name
+    Problem.find({}, null, {sort: {name: 1}}, function(err, problems) {
+        if (err) {
+            throw err;
+            console.log(err);
+        }
+        else {
+            res.render('admin_problem_edit', {problems: problems});
+        }
+    });
+  });
+
+  app.post('/admin/problem/edit/:problem', function(req, res, next) {
+    var form = req.body;
+
+    var ProblemSchema = schema.ProblemSchema;
+    var Problem = mongoose.model('Problem', ProblemSchema);
+    
+    // Check for duplicate problem code
+    var creds = {};
+    creds.code = form.code;
+    
+    Problem.findOne(creds, function(err, result) {
+        if (err || !result) {
+          res.end("Cannot edit problem since it is not present.");
+          return ;
+        }
+        else {
+          var problem = {};
+          problem.name = form.name;
+          problem.code = form.code;
+          problem.description = form.description;
+          problem.points = form.points;
+          problem.grading_type = form.grading_type;
+
+          if (problem.grading_type == config.AUTO_GRADING) {
+              problem.input_format = form.input_format;
+              problem.output_format = form.output_format;
+              problem.constraints = form.constraints;
+              problem.time_limit = form.time_limit;
+              problem.sample_input = form.sample_input;
+              problem.sample_output = form.sample_output;
+          }
+
+          Problem.update(result, {$set: problem}, function(err) {
+              if (err) {
+                  throw err;
+                  console.log(err);
+              } 
+              else {
+                  console.log("Problem details edited.");
+              }
+          });
+
+          var exec = require('child_process').exec, child;
+          child = exec('python update_score.py',
+            function (error, stdout, stderr) {
+              console.log('stdout: ' + stdout);
+              console.log('stderr: ' + stderr);
+              if (error !== null) {
+                console.log('exec error: ' + error);
+              }
+              res.redirect('/problems');
+          });
+
+        }
+    });
+   }); 
   
   app.post('/admin/problem/add', function(req, res, next) {
     var form = req.body;

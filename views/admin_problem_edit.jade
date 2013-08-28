@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  h3 Which problem would you like to edit?
+  table.table.table-striped
+    th Problem Name
+    th Points
+    th Problem Code
+    - for (var i = 0; i < problems.length; i++)
+        tr
+          td 
+              a(href='/admin/problem/edit/#{problems[i].code}') #{problems[i].name}
+          td #{problems[i].points}
+          td #{problems[i].code}

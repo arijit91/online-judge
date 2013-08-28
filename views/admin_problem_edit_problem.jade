@@ -1,0 +1,82 @@
+extends layout
+
+block content
+  form#problem-form.form-horizontal(method='post', enctype='multipart/form-data')
+    fieldset
+      legend Edit a Problem
+      .control-group
+          label.control-label Problem Name
+          .controls
+            input(type='text', name='name', required='required', data-validation-required-message='Required', value='#{problem.name}')
+            p.help-block
+
+      .control-group
+          label.control-label Problem Code
+          .controls
+            input(type='text', name='code', pattern='[a-zA-Z0-9]*', data-validation-pattern-message='Only alphanumeric characters allowed', required='required', data-validation-required-message='Required', value='#{problem.code}')
+            p.help-block
+
+        .control-group
+            label.control-label Problem Description
+            .controls
+                textarea(name='description')= problem.description
+
+        .control-group
+            label.control-label Points for Problem
+            .controls
+                input(name='points', type='number', required='required',
+                    data-validation-required-message='Required', value='#{problem.points}')
+
+        .control-group
+            label.control-label Grading Type
+            .controls
+                select(name='grading_type', id='grading_type', value='#{manual_grade}')
+                    option(onclick="show_stuff()") #{auto_grade}
+                    option(onclick="hide_stuff()") #{manual_grade}
+
+        div#optional
+            .control-group
+                label.control-label Input Format
+                .controls
+                    textarea(name='input_format')= problem.input_format
+
+            .control-group
+                label.control-label Output Format
+                .controls
+                    textarea(name='output_format')= problem.output_format
+
+            .control-group
+                label.control-label Constraints
+                .controls
+                    textarea(name='constraints')= problem.constraints
+
+            .control-group
+                label.control-label Time Limit in Seconds
+                .controls
+                    select(name='time_limit', id='time_limit')
+                        - for (var i = 1; i <= 10; i++)
+                            option #{i}
+
+            .control-group
+                label.control-label Sample Input
+                .controls
+                    textarea(name='sample_input')= problem.sample_input
+
+            .control-group
+                label.control-label Sample Output
+                .controls
+                    textarea(name='sample_output')= problem.sample_output
+
+      input.btn.btn-primary(type='submit', value='Submit', id='submit')
+
+    fieldset
+  form
+
+  script.
+    function show_stuff() { 
+        document.getElementById("optional").style.display="block";
+    }
+    function hide_stuff() { 
+        document.getElementById("optional").style.display="none";
+    }
+
